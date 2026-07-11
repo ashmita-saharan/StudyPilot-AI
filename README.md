@@ -31,3 +31,11 @@ Agents
 Workflow
 
 Upload → Embeddings → Notes/Tutor/Quiz → Evaluation → Memory → Dashboard
+
+# Team Members
+
+- Ashmita
+- Priyanka Yadav
+- Yana Garg
+- Shaik Tahseen
+- Muskan Kakwani
