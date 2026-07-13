@@ -7,5 +7,8 @@ sentence-transformers
 pypdf
 python-pptx
 python-multipart
+python-dotenv
 sqlalchemy
 google-generativeai
+langchain-text-splitters
+langchain-core
