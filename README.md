@@ -32,10 +32,36 @@ Workflow
 
 Upload → Embeddings → Notes/Tutor/Quiz → Evaluation → Memory → Dashboard
 
-# Team Members
+## Team Members
 
 - Ashmita
 - Priyanka Yadav
 - Yana Garg
 - Shaik Tahseen
 - Muskan Kakwani
+
+## Backend Setup
+
+### Clone
+
+git clone <repo>
+
+### Create Virtual Environment
+
+python -m venv venv
+
+### Activate
+
+venv\Scripts\activate
+
+### Install
+
+pip install -r requirements.txt
+
+### Create .env
+
+GOOGLE_API_KEY=YOUR_API_KEY
+
+### Run
+
+uvicorn main:app --reload
