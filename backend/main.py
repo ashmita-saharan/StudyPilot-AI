@@ -6,11 +6,23 @@ from routers.chat import router as chat_router
 from routers.quiz import router as quiz_router
 from routers.notes import router as notes_router
 from routers.memory import router as memory_router
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
     title="StudyPilot AI",
     description="Agentic AI Learning Assistant",
     version="1.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.on_event("startup")
