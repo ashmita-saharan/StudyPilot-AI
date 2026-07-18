@@ -3,6 +3,7 @@ from routers.upload import router as upload_router
 from routers.search import router as search_router
 from routers.chat import router as chat_router
 from routers.quiz import router as quiz_router
+from routers.notes import router as notes_router
 
 app = FastAPI(
     title="StudyPilot AI",
@@ -14,6 +15,7 @@ app.include_router(upload_router)
 app.include_router(search_router)
 app.include_router(chat_router)
 app.include_router(quiz_router)
+app.include_router(notes_router)
 
 @app.get("/")
 def home():
