@@ -12,3 +12,4 @@ sqlalchemy
 google-generativeai
 langchain-text-splitters
 langchain-core
+langchain_chroma
