@@ -1,5 +1,6 @@
 import Card from "../common/Card";
 import Button from "../common/Button";
+import welcomeImg from "../../assets/welcome.png";
 
 export default function WelcomeCard() {
 
@@ -48,11 +49,11 @@ export default function WelcomeCard() {
                 className="hidden lg:flex items-center justify-center w-72 h-72 rounded-3xl bg-[#EAF7F9]"
             >
 
-                <span className="text-8xl">
-
-                    📚
-
-                </span>
+                <img 
+                    src={welcomeImg} 
+                    alt="Learning Illustration" 
+                    className="max-w-full max-h-full object-contain"
+                />
 
             </div>
 
