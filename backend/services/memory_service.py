@@ -67,7 +67,7 @@ def update_topic_progress(student_id, topic, latest_confidence):
         cursor.execute("""
             UPDATE topic_progress
             SET confidence=?,
-                attempts=?.
+                attempts=?,
                 revision_status=?,
                 last_updated=CURRENT_TIMESTAMP
             WHERE student_id=? AND topic=?

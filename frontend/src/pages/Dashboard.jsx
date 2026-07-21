@@ -14,7 +14,19 @@ export default function Dashboard() {
     const [dashboard, setDashboard] = useState(null);
 
     useEffect(() => {
+
         loadDashboard();
+
+        const handleFocus = () => {
+            loadDashboard();
+        };
+
+        window.addEventListener("focus", handleFocus);
+
+        return () => {
+            window.removeEventListener("focus", handleFocus);
+        };
+
     }, []);
 
     async function loadDashboard() {

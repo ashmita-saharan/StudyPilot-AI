@@ -21,7 +21,10 @@ export default function QuizInput({
 
         if(!filename) return;
 
-        onGenerate(filename);
+        onGenerate({
+            filename,
+            topic: filename.replace(/\.[^/.]+$/, "")
+        });
 
     }
 

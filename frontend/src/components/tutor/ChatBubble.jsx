@@ -62,7 +62,11 @@ export default function ChatBubble({
                     `}
                 >
 
-                    {message}
+                    {typeof message === "string"
+
+        ? message
+
+        : message?.answer || JSON.stringify(message, null, 2)}
 
                     {
 
@@ -72,7 +76,11 @@ export default function ChatBubble({
 
                             className="mt-4 flex items-center gap-2 text-sm text-gray-400 hover:text-black"
 
-                            onClick={() => navigator.clipboard.writeText(message)}
+                            onClick={() => navigator.clipboard.writeText(
+                                typeof message === "string"
+                                    ? message
+                                    : message?.answer || ""
+                            )}
 
                         >
 

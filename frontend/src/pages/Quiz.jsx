@@ -3,6 +3,7 @@ import { useState } from "react";
 import QuizInput from "../components/quiz/QuizInput";
 import QuizCard from "../components/quiz/QuizCard";
 import QuizResult from "../components/quiz/QuizResult";
+import { submitQuizWorkflow } from "../services/workflowApi";
 
 import { generateQuiz } from "../services/quizApi";
 
@@ -11,16 +12,23 @@ import parseQuiz from "../utils/parseQuiz";
 export default function Quiz(){
 
     const [loading,setLoading]=useState(false);
-
     const [questions,setQuestions]=useState([]);
-
     const [current,setCurrent]=useState(0);
-
     const [answers,setAnswers]=useState({});
-
     const [finished,setFinished]=useState(false);
 
-    async function handleGenerate(filename){
+    const [evaluation,setEvaluation]=useState(null);
+    const [dashboard,setDashboard]=useState(null);
+    const [rawQuiz,setRawQuiz]=useState("");
+
+    const [selectedFile, setSelectedFile] = useState("");
+    const [selectedTopic, setSelectedTopic] = useState("");
+
+    const [recommendation, setRecommendation] = useState(null);
+
+    async function handleGenerate(data){
+        setSelectedFile(data.filename);
+        setSelectedTopic(data.topic);
 
         setLoading(true);
 
@@ -32,13 +40,14 @@ export default function Quiz(){
 
         try{
 
-            const response=await generateQuiz(filename);
+            const response=await generateQuiz(data.filename);
 
             const rawQuiz = response.quiz?.[0]?.text || "";
 
             const parsedQuiz = parseQuiz(rawQuiz);
 
             setQuestions(parsedQuiz);
+            setRawQuiz(rawQuiz);
 
         }
 
@@ -90,29 +99,59 @@ export default function Quiz(){
 
     }
 
-    function submitQuiz(){
+    async function submitQuiz(){
 
-        setFinished(true);
+        try{
+
+            const studentAnswers = questions.map((question,index)=>{
+
+                return `
+
+    Question ${index+1}
+
+    ${question.question}
+
+    Student Answer:
+
+    ${answers[index] || "Not Answered"}
+
+    `;
+
+            }).join("\n");
+
+            const result = await submitQuizWorkflow({
+
+                filename: selectedFile,
+
+                topic: selectedTopic,
+
+                quiz_text: rawQuiz,
+
+                student_answers: studentAnswers
+
+            });
+
+            setEvaluation(result.evaluation);
+
+            setDashboard(result.dashboard);
+
+            setRecommendation(result.recommendation);
+
+            setFinished(true);
+
+        }
+
+        catch(error){
+
+            console.log(error);
+
+            alert("Unable to evaluate quiz.");
+
+        }
 
     }
 
-    function calculateScore(){
-
-        let score=0;
-
-        questions.forEach((q,index)=>{
-
-            if(answers[index]===q.answer){
-
-                score++;
-
-            }
-
-        });
-
-        return score;
-
-    }
+    
 
     return(
 
@@ -228,9 +267,9 @@ export default function Quiz(){
 
                 <QuizResult
 
-                    score={calculateScore()}
-
-                    total={questions.length}
+                    evaluation={evaluation}
+                    dashboard={dashboard}
+                    recommendation={recommendation}
 
                 />
 

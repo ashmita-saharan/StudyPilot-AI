@@ -14,7 +14,7 @@ export default function WelcomeCard() {
 
                 <p className="text-gray-500 text-lg">
 
-                    Welcome Back 👋
+                    Welcome Back....
 
                 </p>
 

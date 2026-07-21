@@ -31,6 +31,7 @@ export default function ChatWindow({
             p-8
             h-[520px]
             overflow-y-auto
+            space-y-4
             "
 
         >
@@ -39,15 +40,142 @@ export default function ChatWindow({
 
                 messages.map((msg, index) => (
 
-                    <ChatBubble
+                    <div key={index}>
 
-                        key={index}
+                        <ChatBubble
 
-                        sender={msg.sender}
+                            sender={msg.sender}
 
-                        message={msg.message}
+                            message={
 
-                    />
+                                typeof msg.message === "string"
+
+                                    ? msg.message
+
+                                    : msg.message.answer
+
+                            }
+
+                        />
+
+                        {
+
+                            msg.sender === "ai"
+
+                            &&
+
+                            typeof msg.message === "object"
+
+                            &&
+
+                            msg.message.student_profile?.weak_topics?.length > 0
+
+                            &&
+
+                            (
+
+                                <div
+
+                                    className="
+                                    ml-12
+                                    mt-3
+                                    bg-yellow-50
+                                    border
+                                    border-yellow-200
+                                    rounded-xl
+                                    p-4
+                                    text-sm
+                                    "
+
+                                >
+
+                                    <h3 className="font-semibold">
+
+                                        Weak Topics
+
+                                    </h3>
+
+                                    <ul className="list-disc ml-5 mt-2">
+
+                                        {
+
+                                            msg.message.student_profile.weak_topics.map(
+
+                                                (topic, i) => (
+
+                                                    <li key={i}>
+
+                                                        {topic}
+
+                                                    </li>
+
+                                                )
+
+                                            )
+
+                                        }
+
+                                    </ul>
+
+                                </div>
+
+                            )
+
+                        }
+
+                        {
+
+                            msg.sender === "ai"
+
+                            &&
+
+                            typeof msg.message === "object"
+
+                            &&
+
+                            msg.message.recommendation
+
+                            &&
+
+                            (
+
+                                <div
+
+                                    className="
+                                    ml-12
+                                    mt-3
+                                    bg-blue-50
+                                    border
+                                    border-blue-200
+                                    rounded-xl
+                                    p-4
+                                    "
+
+                                >
+
+                                    <h3 className="font-semibold">
+
+                                        StudyPilot Recommendation
+
+                                    </h3>
+
+                                    <p className="mt-2">
+
+                                        {
+
+                                            msg.message.recommendation.message
+
+                                        }
+
+                                    </p>
+
+                                </div>
+
+                            )
+
+                        }
+
+                    </div>
 
                 ))
 

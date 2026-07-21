@@ -4,57 +4,98 @@ import ChatInput from "../components/tutor/ChatInput";
 import ChatWindow from "../components/tutor/ChatWindow";
 import SuggestedQuestions from "../components/tutor/SuggestedQuestions";
 
-import { askTutor } from "../services/tutorApi";
+import { askLearningAssistant } from "../services/learningAssistantApi";
 
 export default function Tutor(){
     const [messages, setMessages] = useState([
         {
+
             sender: "ai",
-            message: "👋 Hello! I'm StudyPilot AI.\nAsk me anything from your uploaded study material."
+
+            message: {
+
+                answer: "👋 Hello! I'm StudyPilot AI.\nAsk me anything from your uploaded study material.",
+
+                student_profile: {
+
+                    weak_topics: []
+
+                },
+
+                recommendation: null
+
+            }
+
         }
     ]);
 
     const [loading, setLoading] = useState(false);
 
     async function send(question){
+
         setMessages(prev => [
+
             ...prev,
+
             {
+
                 sender: "user",
+
                 message: question
+
             }
+
         ]);
+
         setLoading(true);
-        try {
-            const response = await askTutor(question);
-            const aiMessage =
-                response.answer
-                    ?.map(item => item.text)
-                    .join("\n\n")
-                ||
-                "No response received.";
+
+        try{
+
+            const response = await askLearningAssistant(question);
 
             setMessages(prev => [
+
                 ...prev,
+
                 {
+
                     sender: "ai",
-                    message: aiMessage
+
+                    // Store the ENTIRE response object
+                    message: response
+
                 }
+
             ]);
+
         }
-        catch(error) {
+
+        catch(error){
+
             console.log(error);
+
             setMessages(prev => [
+
                 ...prev,
+
                 {
+
                     sender: "ai",
+
                     message: "⚠️ Something went wrong while generating the response."
+
                 }
+
             ]);
+
         }
-        finally {
+
+        finally{
+
             setLoading(false);
+
         }
+
     }
 
     return (

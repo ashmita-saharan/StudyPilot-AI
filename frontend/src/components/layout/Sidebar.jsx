@@ -39,7 +39,7 @@ const links = [
 export default function Sidebar() {
     return (
         //w-64 bg-gradient-to-b from-[#6F95A3] to-[#5F8795] text-white p-6
-        <div className="w-64 bg-[#5F8795]/80 backdrop-blur-md border-r border-white/20 text-white p-6 min-h-screen">
+        <div className="w-64 bg-[#5F8795]/70 backdrop-blur-md border-r border-white/20 text-white p-6 min-h-screen">
 
             <div className="flex items-center gap-3 mb-10">
                 <img 

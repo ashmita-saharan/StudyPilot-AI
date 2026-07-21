@@ -1,7 +1,9 @@
 from services.embeddings import search_chunks
 from services.llm import llm
 
+
 def ask_question(question: str):
+
     retrieved_chunks = search_chunks(question)
 
     context = "\n\n".join(retrieved_chunks)
@@ -23,6 +25,26 @@ Question:
 
 Answer:
 """
+
     response = llm.invoke(prompt)
 
-    return response.content
+    content = response.content
+
+    # Gemini sometimes returns a list instead of a string
+    if isinstance(content, list):
+
+        answer = ""
+
+        for part in content:
+
+            if isinstance(part, dict):
+
+                answer += part.get("text", "")
+
+            else:
+
+                answer += getattr(part, "text", str(part))
+
+        return answer.strip()
+
+    return str(content).strip()
