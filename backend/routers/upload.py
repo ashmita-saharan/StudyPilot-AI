@@ -70,3 +70,17 @@ async def upload_document(file: UploadFile = File(...)):
             "metadata": chunks[0].metadata
         }
     }
+
+@router.get("/files")
+def get_uploaded_files():
+    uploaded_dir = Path(UPLOAD_FOLDER)
+
+    files = []
+
+    for file in uploaded_dir.iterdir():
+        if file.is_file():
+            files.append(file.name)
+
+    return {
+        "files": files
+    }

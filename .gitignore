@@ -222,3 +222,5 @@ backend/database/*.db
 node_modules/
 
 chroma_db/
+uploads/
+frontend/node_modules
