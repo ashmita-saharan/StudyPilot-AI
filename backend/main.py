@@ -6,6 +6,7 @@ from routers.chat import router as chat_router
 from routers.quiz import router as quiz_router
 from routers.notes import router as notes_router
 from routers.memory import router as memory_router
+from routers.evaluation import router as evaluation_router
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
@@ -36,6 +37,7 @@ app.include_router(chat_router)
 app.include_router(quiz_router)
 app.include_router(notes_router)
 app.include_router(memory_router)
+app.include_router(evaluation_router)
 
 @app.get("/")
 def home():
