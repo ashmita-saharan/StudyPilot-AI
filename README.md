@@ -200,15 +200,27 @@ StudyPilot-AI/
 
 ├── frontend/
 
-│   ├── components/
+│   ├── public/
 
-│   ├── pages/
+|   ├── src/
 
-│   ├── services/
+│     ├── assets/
 
-│   └── utils/
+│     ├── pages/
 
-│
+│     ├── services/
+
+│     |── utils/
+
+│     ├── App.jsx
+
+│     |── main.jsx
+
+│     └── index.css
+
+│   ├── index.html
+
+|   └──  package.json
 
 ├── backend/
 
