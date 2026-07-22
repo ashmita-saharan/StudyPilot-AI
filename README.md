@@ -38,7 +38,6 @@ Upload → Embeddings → Notes/Tutor/Quiz → Evaluation → Memory → Dashboa
 - Priyanka Yadav
 - Yana Garg
 - Shaik Tahseen
-- Muskan Kakwani
 
 ## Backend Setup
 
