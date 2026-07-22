@@ -3,63 +3,90 @@ import { useState } from "react";
 import QuizInput from "../components/quiz/QuizInput";
 import QuizCard from "../components/quiz/QuizCard";
 import QuizResult from "../components/quiz/QuizResult";
-import { submitQuizWorkflow } from "../services/workflowApi";
 
 import { generateQuiz } from "../services/quizApi";
+import { submitQuizWorkflow } from "../services/workflowApi";
 
 import parseQuiz from "../utils/parseQuiz";
 
-export default function Quiz(){
+export default function Quiz() {
 
-    const [loading,setLoading]=useState(false);
-    const [questions,setQuestions]=useState([]);
-    const [current,setCurrent]=useState(0);
-    const [answers,setAnswers]=useState({});
-    const [finished,setFinished]=useState(false);
+    const [loading, setLoading] = useState(false);
 
-    const [evaluation,setEvaluation]=useState(null);
-    const [dashboard,setDashboard]=useState(null);
-    const [rawQuiz,setRawQuiz]=useState("");
+    const [questions, setQuestions] = useState([]);
+
+    const [current, setCurrent] = useState(0);
+
+    const [answers, setAnswers] = useState({});
+
+    const [finished, setFinished] = useState(false);
+
+    const [rawQuiz, setRawQuiz] = useState("");
 
     const [selectedFile, setSelectedFile] = useState("");
+
     const [selectedTopic, setSelectedTopic] = useState("");
+
+    const [evaluation, setEvaluation] = useState(null);
+
+    const [dashboard, setDashboard] = useState(null);
 
     const [recommendation, setRecommendation] = useState(null);
 
-    async function handleGenerate(data){
-        setSelectedFile(data.filename);
-        setSelectedTopic(data.topic);
+
+    async function handleGenerate(data) {
 
         setLoading(true);
 
         setFinished(false);
 
-        setCurrent(0);
+        setQuestions([]);
 
         setAnswers({});
 
-        try{
+        setCurrent(0);
 
-            const response=await generateQuiz(data.filename);
+        setEvaluation(null);
 
-            const rawQuiz = response.quiz?.[0]?.text || "";
+        setDashboard(null);
 
-            const parsedQuiz = parseQuiz(rawQuiz);
+        setRecommendation(null);
 
-            setQuestions(parsedQuiz);
-            setRawQuiz(rawQuiz);
+        setSelectedFile(data.filename);
+
+        setSelectedTopic(data.topic);
+
+        try {
+
+            const response = await generateQuiz(data.filename);
+
+            console.log("Quiz Response");
+            console.log(response);
+
+            const quizText =
+                Array.isArray(response.quiz)
+                    ? response.quiz[0]?.text || ""
+                    : response.quiz || "";
+
+            setRawQuiz(quizText);
+
+            const parsed = parseQuiz(quizText);
+
+            console.log(parsed);
+
+            setQuestions(parsed);
 
         }
 
-        catch(error){
+        catch (error) {
 
-            console.log(error);
+            console.error(error);
 
             alert("Unable to generate quiz.");
 
         }
 
-        finally{
+        finally {
 
             setLoading(false);
 
@@ -67,55 +94,56 @@ export default function Quiz(){
 
     }
 
-    function selectOption(option){
 
-        setAnswers({
+    function selectOption(option) {
 
-            ...answers,
+        setAnswers(prev => ({
 
-            [current]:option
+            ...prev,
 
-        });
+            [current]: option
+
+        }));
 
     }
 
-    function nextQuestion(){
 
-        if(current<questions.length-1){
+    function nextQuestion() {
 
-            setCurrent(current+1);
+        if (current < questions.length - 1) {
+
+            setCurrent(current + 1);
 
         }
 
     }
 
-    function previousQuestion(){
 
-        if(current>0){
+    function previousQuestion() {
 
-            setCurrent(current-1);
+        if (current > 0) {
+
+            setCurrent(current - 1);
 
         }
 
     }
 
-    async function submitQuiz(){
 
-        try{
+    async function submitQuiz() {
 
-            const studentAnswers = questions.map((question,index)=>{
+        try {
+
+            const studentAnswers = questions.map((question, index) => {
 
                 return `
+Question ${index + 1}
 
-    Question ${index+1}
+${question.question}
 
-    ${question.question}
-
-    Student Answer:
-
-    ${answers[index] || "Not Answered"}
-
-    `;
+Student Answer:
+${answers[index] || "Not Answered"}
+`;
 
             }).join("\n");
 
@@ -131,6 +159,8 @@ export default function Quiz(){
 
             });
 
+            console.log(result);
+
             setEvaluation(result.evaluation);
 
             setDashboard(result.dashboard);
@@ -141,9 +171,9 @@ export default function Quiz(){
 
         }
 
-        catch(error){
+        catch (error) {
 
-            console.log(error);
+            console.error(error);
 
             alert("Unable to evaluate quiz.");
 
@@ -151,9 +181,8 @@ export default function Quiz(){
 
     }
 
-    
 
-    return(
+    return (
 
         <div className="space-y-8">
 
@@ -167,97 +196,99 @@ export default function Quiz(){
 
             {
 
-                questions.length>0 && !finished &&
+                questions.length > 0 && !finished && (
 
-                <>
+                    <>
 
-                    <div className="flex justify-between items-center">
+                        <div className="flex justify-between items-center">
 
-                        <h2 className="text-2xl font-bold">
+                            <h2 className="text-2xl font-bold">
 
-                            Question {current+1} / {questions.length}
+                                Question {current + 1} / {questions.length}
 
-                        </h2>
+                            </h2>
 
-                        <div className="text-gray-500">
+                            <div className="text-gray-500">
 
-                            {Math.round(((current+1)/questions.length)*100)}%
+                                {Math.round(((current + 1) / questions.length) * 100)}%
+
+                            </div>
 
                         </div>
 
-                    </div>
+                        <QuizCard
 
-                    <QuizCard
+                            question={questions[current].question}
 
-                        question={questions[current].question}
+                            options={questions[current].options}
 
-                        options={questions[current].options}
+                            selected={answers[current]}
 
-                        selected={answers[current]}
+                            onSelect={selectOption}
 
-                        onSelect={selectOption}
+                        />
 
-                    />
+                        <div className="flex justify-between">
 
-                    <div className="flex justify-between">
+                            <button
 
-                        <button
+                                onClick={previousQuestion}
 
-                            onClick={previousQuestion}
+                                disabled={current === 0}
 
-                            disabled={current===0}
+                                className="px-6 py-3 rounded-xl bg-gray-200"
 
-                            className="px-6 py-3 rounded-xl bg-gray-200"
+                            >
 
-                        >
+                                Previous
 
-                            Previous
+                            </button>
 
-                        </button>
+                            {
 
-                        {
+                                current === questions.length - 1 ?
 
-                            current===questions.length-1 ?
+                                    (
 
-                            (
+                                        <button
 
-                                <button
+                                            onClick={submitQuiz}
 
-                                    onClick={submitQuiz}
+                                            className="px-6 py-3 rounded-xl bg-[#6F95A3] text-white"
 
-                                    className="px-6 py-3 rounded-xl bg-[#6F95A3] text-white"
+                                        >
 
-                                >
+                                            Submit Quiz
 
-                                    Submit Quiz
+                                        </button>
 
-                                </button>
+                                    )
 
-                            )
+                                    :
 
-                            :
+                                    (
 
-                            (
+                                        <button
 
-                                <button
+                                            onClick={nextQuestion}
 
-                                    onClick={nextQuestion}
+                                            className="px-6 py-3 rounded-xl bg-[#6F95A3] text-white"
 
-                                    className="px-6 py-3 rounded-xl bg-[#6F95A3] text-white"
+                                        >
 
-                                >
+                                            Next
 
-                                    Next
+                                        </button>
 
-                                </button>
+                                    )
 
-                            )
+                            }
 
-                        }
+                        </div>
 
-                    </div>
+                    </>
 
-                </>
+                )
 
             }
 
@@ -268,7 +299,9 @@ export default function Quiz(){
                 <QuizResult
 
                     evaluation={evaluation}
+
                     dashboard={dashboard}
+
                     recommendation={recommendation}
 
                 />
