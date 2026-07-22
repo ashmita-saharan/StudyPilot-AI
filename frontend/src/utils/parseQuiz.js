@@ -2,21 +2,32 @@ export default function parseQuiz(text) {
 
     if (!text) return [];
 
+    // If Gemini response is an object instead of a string
+    if (typeof text === "object") {
+        if (Array.isArray(text)) {
+            text = text.map(item => item.text || "").join("\n");
+        } else {
+            text = text.text || "";
+        }
+    }
+
+    text = text.replace(/\r/g, "");
+
     const questions = [];
 
-    // Split the response into question blocks
-    const blocks = text.split(/\*\*\d+\.\s/).filter(Boolean);
+    // Split at **1. **2. etc.
+    const blocks = text.split(/\*\*\d+\.\s+/).filter(Boolean);
 
     blocks.forEach((block) => {
 
         const lines = block
             .split("\n")
             .map(line => line.trim())
-            .filter(line => line !== "");
+            .filter(Boolean);
 
-        if (lines.length === 0) return;
+        if (!lines.length) return;
 
-        const question = lines[0].replace(/\*\*/g, "");
+        const question = lines[0].replace(/\*\*/g, "").trim();
 
         const options = [];
 
@@ -24,37 +35,41 @@ export default function parseQuiz(text) {
 
         lines.forEach(line => {
 
-            // A. ...
-            // B. ...
-            // C. ...
-            // D. ...
+            // Accept:
+            // A.
+            // A)
+            // A :
+            // A -
+            // A:
+            if (/^[A-D][\.\)\:\-]/i.test(line)) {
 
-            if (/^[A-D]\./.test(line)) {
-
-                options.push(line);
+                options.push(
+                    line.replace(/\*\*/g, "").trim()
+                );
 
             }
 
-            if (line.includes("Correct Answer")) {
+            const match = line.match(/Correct\s*Answer\s*:\s*([A-D])/i);
 
-                const match = line.match(/Correct Answer:\s*([A-D])/i);
+            if (match) {
 
-                if (match) {
-
-                    correctLetter = match[1];
-
-                }
+                correctLetter = match[1].toUpperCase();
 
             }
 
         });
 
-        // Find full correct option
         let answer = "";
 
         options.forEach(option => {
 
-            if (option.startsWith(correctLetter + ".")) {
+            if (
+                option.startsWith(correctLetter + ".") ||
+                option.startsWith(correctLetter + ")") ||
+                option.startsWith(correctLetter + ":") ||
+                option.startsWith(correctLetter + " -") ||
+                option.startsWith(correctLetter + "-")
+            ) {
 
                 answer = option;
 
@@ -63,6 +78,8 @@ export default function parseQuiz(text) {
         });
 
         questions.push({
+
+            id: questions.length + 1,
 
             question,
 
