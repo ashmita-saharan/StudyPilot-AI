@@ -392,10 +392,11 @@ Dashboard
 
 # 👥 Team Members
 
-- **Ashmita**
-- **Priyanka Yadav**
-- **Yana Garg**
-- **Shaik Tahseen**
+- **Ashmita** - Phase 0 pipeline, Memory Agent, Dashboard, backend integration, API routing, frontend integration,  documentation.  
+- **Priyanka Yadav**  - Note Agent, Evaluation Agent, backend integration, API routing, Git merge conflict resolution, documentation
+- **Yana Garg** - Tutor Agent (RAG), integration support
+- **Shaik Tahseen** - Quiz Agent, integration support , documentation.
+
 
 ---
 
